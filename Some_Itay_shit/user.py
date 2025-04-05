@@ -99,7 +99,7 @@ class User:
         """
         self.preferences[key] = value
     
-    def get_preference(self, key: str, default: Any = None) -> Any:
+    def get_preference(self, key: str, default: any = None) -> any:
         """
         Get a user preference
         
@@ -150,7 +150,7 @@ class User:
         """
         return [n for n in self.notifications if not n["is_read"]]
     
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> Dict[str, any]:
         """
         Convert user to dictionary format
         
@@ -173,7 +173,7 @@ class User:
         }
     
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'User':
+    def from_dict(cls, data: Dict[str, any]) -> 'User':
         """
         Create a user from dictionary data
         

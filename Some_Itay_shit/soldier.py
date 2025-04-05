@@ -163,7 +163,7 @@ class Soldier(User):
         """
         return (datetime.now() - self.service_start_date).days
     
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> Dict[str, any]:
         """
         Convert soldier to dictionary format
         
@@ -184,7 +184,7 @@ class Soldier(User):
         return data
     
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'Soldier':
+    def from_dict(cls, data: Dict[str, any]) -> 'Soldier':
         """
         Create a soldier from dictionary data
         
