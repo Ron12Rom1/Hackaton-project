@@ -1,1 +1,0 @@
-"""Support Chat System package.""" 
