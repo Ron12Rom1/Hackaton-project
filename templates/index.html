@@ -9,19 +9,25 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #f0f2f5;
             text-align: center;
+            background-image: url(bg_anime-style.jpg);
+            background-size: cover;
+            background-repeat: no-repeat;
+            
         }
         .container {
             max-width: 600px;
             margin: 40px auto;
             padding: 20px;
-            background: white;
+            background-color: hsla(0, 0%, 10%, 0.25);
+            backdrop-filter: blur(8px);
+            border-bottom: 2px solid rgba(40, 40, 40, 0.701);
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
         h1 {
-            color: #1a73e8;
+            color: rgb(29, 45, 126);
+            font-size: 40px;
             margin-bottom: 30px;
         }
         .button-group {
@@ -34,24 +40,36 @@
             padding: 12px 24px;
             border: none;
             border-radius: 4px;
-            background-color: #1a73e8;
+            background-color: hsla(241, 54%, 21%, 0.5);
+            backdrop-filter: blur(8px);
             color: white;
             font-size: 16px;
             cursor: pointer;
             transition: background-color 0.3s;
             text-decoration: none;
+            transition-property: box-shadow, transform, backgound-color;
+            transition-duration: 0.7s;
+            cursor: pointer;
         }
         .button:hover {
-            background-color: #1557b0;
+            box-shadow: 5px 8px 5px rgb(69, 69, 69);
+            background-color: hsla(241, 43%, 38%, 0.8);
+            transform: translateY(-6px);
         }
         .register-button {
-            background-color: #34a853;
+            background-color: hsla(138, 77%, 25%, 0.5);
+            backdrop-filter: blur(8px);
+            transition-property: box-shadow, transform, backgound-color;
+            transition-duration: 0.7s;
+            cursor: pointer;
         }
         .register-button:hover {
-            background-color: #2d8745;
+            box-shadow: 5px 8px 5px rgb(69, 69, 69);
+            background-color: hsla(138, 53%, 34%, 0.8);
+            transform: translateY(-6px);
         }
         .section-title {
-            color: #5f6368;
+            color: #1d2732;
             margin-top: 30px;
             margin-bottom: 15px;
             font-size: 1.2em;
@@ -60,7 +78,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>ברוכים הבאים למערכת התמיכה</h1>
+        <h1>ברוכים הבאים להג-נפש</h1>
         
         <div class="section-title">משתמש קיים</div>
         <div class="button-group">
