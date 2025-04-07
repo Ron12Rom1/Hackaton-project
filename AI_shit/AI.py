@@ -8,12 +8,12 @@ client = Groq(
     api_key=dotenv.get_key('.env', 'SECRET_KEY'),
 )
 
-with open("AI shit/you_are.txt", "r") as f1:
+with open("AI_shit/you_are.txt", "r") as f1:
     you_are = f1.read()
 
-def send_to_AI(message):
+def chat_with_ai(message):
         
-    with open ("AI shit/memory.peepee_poopoo", "r+") as mem:
+    with open ("AI_shit/memory.peepee_poopoo", "r+") as mem:
         memory = mem.read()
 
         chat_completion = client.chat.completions.create(
@@ -36,7 +36,7 @@ def send_to_AI(message):
     print("\n", output)
     # pyttsx3_TTS(output)
 
-    with open("AI shit/memory.peepee_poopoo", "a") as mem:
+    with open("AI_shit/memory.peepee_poopoo", "a") as mem:
         mem.write("\nUser: " + message  + "\nYou: " + output)
 
     return output
@@ -45,4 +45,4 @@ if __name__ == "__main__":
     userIn = "-1"
     while userIn != "exit":
         userIn = input(":   ")
-        print(send_to_AI(userIn))
+        print(chat_with_ai(userIn))
