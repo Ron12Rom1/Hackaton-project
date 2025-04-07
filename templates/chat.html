@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>צ'אט תמיכה</title>
     <link rel="stylesheet" href="/static/css/chat.css">
+    <script src="/static/javascript/chat.js"></script>
 </head>
 <body>
     <div class="container">
@@ -19,30 +20,5 @@
             <button onclick="sendMessage()">שלח</button>
         </div>
     </div>
-
-    <script>
-        function sendMessage() {
-            const input = document.getElementById('message-input');
-            const message = input.value.trim();
-            
-            if (message) {
-                const messagesDiv = document.getElementById('messages');
-                const messageElement = document.createElement('div');
-                messageElement.className = 'message sent';
-                messageElement.textContent = message;
-                messagesDiv.appendChild(messageElement);
-                
-                input.value = '';
-                messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            }
-        }
-
-        // Handle Enter key
-        document.getElementById('message-input').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
-        });
-    </script>
 </body>
 </html> 
