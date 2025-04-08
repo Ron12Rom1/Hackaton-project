@@ -1,3 +1,8 @@
+from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
+from fastapi.templating import Jinja2Templates
+
+from AI_shit.AI import chat_with_ai
 from fastapi import FastAPI, Request, Form, HTTPException
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
@@ -12,9 +17,12 @@ import json
 from datetime import datetime
 import asyncio
 from typing import List, Dict
+from fastapi.staticfiles import StaticFiles
+
 
 # Initialize FastAPI app
 app = FastAPI()
+app.mount("/AI_shit", StaticFiles(directory="AI_shit"), name="AI_shit")
 
 # Setup paths
 BASE_DIR = Path(__file__).resolve().parent
@@ -29,7 +37,7 @@ app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="stat
 def init_db():
     conn = sqlite3.connect('chat.db')
     c = conn.cursor()
-    
+
     # Create users table if not exists
     c.execute('''
         CREATE TABLE IF NOT EXISTS users (
@@ -40,7 +48,7 @@ def init_db():
             user_type TEXT NOT NULL
         )
     ''')
-    
+
     # Create messages table
     c.execute('''
         CREATE TABLE IF NOT EXISTS messages (
@@ -51,7 +59,7 @@ def init_db():
             timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
         )
     ''')
-    
+
     # Create meetings table
     c.execute('''
         CREATE TABLE IF NOT EXISTS meetings (
@@ -65,7 +73,7 @@ def init_db():
             FOREIGN KEY (patient_id) REFERENCES users (id)
         )
     ''')
-    
+
     conn.commit()
     conn.close()
 
@@ -91,26 +99,26 @@ async def register(request: Request):
     password = form.get("password")
     id_number = form.get("id_number")
     user_type = form.get("user_type")
-    
+
     if not all([username, password, id_number, user_type]):
         return {"error": "All fields are required"}
-    
+
     conn = sqlite3.connect('chat.db')
     c = conn.cursor()
-    
+
     # Check if ID number already exists
     c.execute('SELECT id FROM users WHERE id_number=?', (id_number,))
     if c.fetchone():
         conn.close()
         return {"error": "ID number already registered"}
-    
+
     # Insert new user
     c.execute('INSERT INTO users (username, password, id_number, user_type) VALUES (?, ?, ?, ?)',
              (username, password, id_number, user_type))
     conn.commit()
     user_id = c.lastrowid
     conn.close()
-    
+
     # Create response with redirect
     response = RedirectResponse(url=f"/options/{user_type}?user_id={user_id}&is_new_user=true", status_code=303)
     response.set_cookie(key="user_id", value=str(user_id), max_age=86400)  # 24 hours
@@ -140,7 +148,7 @@ async def login(
     )
     user = c.fetchone()
     conn.close()
-    
+
     if user and user[2] == password:  # In production, use proper password hashing
         if user_type in ["soldier", "evacuee", "psychologist"]:
             return RedirectResponse(url=f"/options/{user_type}", status_code=303)
@@ -158,7 +166,7 @@ async def options(
     # Get user_id from URL or cookie
     if not user_id:
         user_id = request.cookies.get("user_id")
-    
+
     user_info = None
     if user_id:
         conn = sqlite3.connect('chat.db')
@@ -168,10 +176,10 @@ async def options(
         if result:
             user_info = {"username": result[0]}
         conn.close()
-    
+
     # Determine which template to use based on user_type
     template_name = f"{user_type}_options.html"
-    
+
     return TEMPLATES.TemplateResponse(
         template_name,
         {
@@ -196,10 +204,10 @@ async def chat(request: Request, user_type: str):
     # Get user ID from session or query parameters
     user_id = request.query_params.get('user_id')
     receiver_id = request.query_params.get('receiver_id')
-    
+
     if not user_id:
         return RedirectResponse(url='/')
-    
+
     return TEMPLATES.TemplateResponse("chat.html", {
         "request": request,
         "user_type": user_type,
@@ -217,13 +225,13 @@ async def send_message(
     try:
         conn = sqlite3.connect('chat.db')
         c = conn.cursor()
-        
+
         # Store the message
         c.execute(
             'INSERT INTO messages (sender_id, receiver_id, content) VALUES (?, ?, ?)',
             (str(sender_id), str(receiver_id), content)
         )
-        
+
         conn.commit()
         conn.close()
         return {"status": "success"}
@@ -239,15 +247,15 @@ async def get_messages(user_id: str):
     try:
         conn = sqlite3.connect('chat.db')
         c = conn.cursor()
-        
+
         # Get only messages sent by the user (for bot chat)
         c.execute('''
-            SELECT sender_id, receiver_id, content, timestamp 
-            FROM messages 
+            SELECT sender_id, receiver_id, content, timestamp
+            FROM messages
             WHERE sender_id = ?
             ORDER BY timestamp ASC
         ''', (str(user_id),))
-        
+
         messages = []
         for row in c.fetchall():
             messages.append({
@@ -256,7 +264,7 @@ async def get_messages(user_id: str):
                 "content": row[2],
                 "timestamp": row[3]
             })
-        
+
         conn.close()
         return {"messages": messages}
     except Exception as e:
@@ -294,7 +302,7 @@ async def get_meetings(user_id: int):
     c = conn.cursor()
     try:
         c.execute('''
-            SELECT m.*, 
+            SELECT m.*,
                    u1.username as psychologist_name,
                    u2.username as patient_name
             FROM meetings m
@@ -362,7 +370,7 @@ async def recover_password(
             "request": Request,
             "error": "הסיסמאות אינן תואמות"
         })
-    
+
     conn = sqlite3.connect('chat.db')
     c = conn.cursor()
     try:
@@ -388,6 +396,28 @@ async def recover_password(
             })
     finally:
         conn.close()
+
+
+@app.get("/receive_message_from_AI/{message}")
+def get_AI_respond(message: str):
+    responses = chat_with_ai(message)
+    return RedirectResponse(f"/chat-bot-response/{responses}")
+
+
+@app.get("/chat-bot-response/{responses}")
+def get_chat_bot_page(responses):
+    # add AI massage to db
+    # with open("./AI_shit/AI_massages.txt", "w") as f:
+    #     f.write(responses)
+    return responses
+    # return RedirectResponse("/chat-bot")
+
+@app.get("/chat-bot/{AI_massage}")
+def get_chat_bot_page_with_AI_respond(AI_massage):
+    return TEMPLATES.TemplateResponse("chat-bot.html", {
+        "request": Request,
+        "AI_massage": AI_massage
+    })
 
 def open_browser():
     time.sleep(1.5)  # Wait a bit for the server to start
