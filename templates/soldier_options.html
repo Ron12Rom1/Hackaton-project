@@ -20,6 +20,31 @@
             border-radius: 10px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
+        .meetings-section {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .meetings-section h2 {
+            color: #1565c0;
+            margin-top: 0;
+        }
+        .meeting-card {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .meeting-card h3 {
+            margin: 0 0 10px 0;
+            color: #1a73e8;
+        }
+        .meeting-card p {
+            margin: 5px 0;
+            color: #5f6368;
+        }
         .option-card {
             background: #f8f9fa;
             padding: 20px;
@@ -115,12 +140,45 @@
         .nav-button:hover {
             background: #5a6268;
         }
+        .welcome-message {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            animation: fadeIn 1s ease-in;
+        }
+        .welcome-message h2 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+        }
+        .welcome-message p {
+            margin: 0;
+            font-size: 16px;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
     <div class="main-content">
+        {% if is_new_user %}
+        <div class="welcome-message">
+            <h2>ברוך הבא!</h2>
+            <p>אנחנו שמחים שהצטרפת למערכת. כאן תוכל לתזמן פגישות עם פסיכולוגים ולקבל תמיכה.</p>
+        </div>
+        {% endif %}
+        <div class="meetings-section">
+            <h2>פגישות שנקבעו</h2>
+            <div id="meetings-container">
+                <!-- Meetings will be displayed here -->
+            </div>
+        </div>
         <div class="nav-buttons">
-            <a href="/" class="nav-button">חזרה למסך הראשי</a>
+            <a href="/" class="nav-button">התנתקות</a>
         </div>
         <h2>אפשרויות תמיכה לחיילים</h2>
         
@@ -135,7 +193,30 @@
             </div>
             <div class="datetime-selector" id="soldiers-datetime">
                 <input type="date" id="soldiers-date" min="{{ today }}">
-                <input type="time" id="soldiers-time">
+                <select id="soldiers-time" class="time-select">
+                    <option value="">בחר שעה</option>
+                    <option value="10:00">10:00</option>
+                    <option value="10:30">10:30</option>
+                    <option value="11:00">11:00</option>
+                    <option value="11:30">11:30</option>
+                    <option value="12:00">12:00</option>
+                    <option value="12:30">12:30</option>
+                    <option value="13:00">13:00</option>
+                    <option value="13:30">13:30</option>
+                    <option value="14:00">14:00</option>
+                    <option value="14:30">14:30</option>
+                    <option value="15:00">15:00</option>
+                    <option value="15:30">15:30</option>
+                    <option value="16:00">16:00</option>
+                    <option value="16:30">16:30</option>
+                    <option value="17:00">17:00</option>
+                    <option value="17:30">17:30</option>
+                    <option value="18:00">18:00</option>
+                    <option value="18:30">18:30</option>
+                    <option value="19:00">19:00</option>
+                    <option value="19:30">19:30</option>
+                </select>
+                <p style="color: #856404; font-size: 0.9em;">פגישות נקבעות במרווחים של 30 דקות</p>
                 <button onclick="scheduleMeeting('soldiers')">קבע פגישה</button>
             </div>
         </div>
@@ -145,8 +226,30 @@
             <p>קבע פגישה עם פסיכולוג</p>
             <div class="datetime-selector" id="psychologist-datetime">
                 <input type="date" id="psychologist-date" min="{{ today }}">
-                <input type="time" id="psychologist-time" min="10:00" max="20:00" step="1800">
-                <p style="color: #856404; font-size: 0.9em;">שעות הפגישה: 10:00 - 20:00</p>
+                <select id="psychologist-time" class="time-select">
+                    <option value="">בחר שעה</option>
+                    <option value="10:00">10:00</option>
+                    <option value="10:30">10:30</option>
+                    <option value="11:00">11:00</option>
+                    <option value="11:30">11:30</option>
+                    <option value="12:00">12:00</option>
+                    <option value="12:30">12:30</option>
+                    <option value="13:00">13:00</option>
+                    <option value="13:30">13:30</option>
+                    <option value="14:00">14:00</option>
+                    <option value="14:30">14:30</option>
+                    <option value="15:00">15:00</option>
+                    <option value="15:30">15:30</option>
+                    <option value="16:00">16:00</option>
+                    <option value="16:30">16:30</option>
+                    <option value="17:00">17:00</option>
+                    <option value="17:30">17:30</option>
+                    <option value="18:00">18:00</option>
+                    <option value="18:30">18:30</option>
+                    <option value="19:00">19:00</option>
+                    <option value="19:30">19:30</option>
+                </select>
+                <p style="color: #856404; font-size: 0.9em;">שעות הפגישה: 10:00 - 20:00, במרווחים של 30 דקות</p>
                 <button onclick="scheduleMeeting('psychologist')">קבע פגישה</button>
             </div>
         </div>
@@ -211,8 +314,8 @@
         }
         
         function isValidTime(time) {
-            const [hours, minutes] = time.split(':').map(Number);
-            return hours >= 10 && hours < 20;
+            // בדיקה שהשעה נבחרה מהתפריט הנפתח
+            return time !== "";
         }
         
         function scheduleMeeting(type) {
@@ -249,6 +352,140 @@
             if (type === 'soldiers') {
                 document.getElementById(`${type}-role`).classList.remove('active');
             }
+        }
+
+        // Function to fetch and display meetings
+        async function fetchMeetings() {
+            try {
+                const userId = new URLSearchParams(window.location.search).get('user_id');
+                console.log("Fetching meetings for user ID:", userId);
+                
+                // Try to fetch meetings from the API
+                const response = await fetch(`/api/meetings/${userId}`);
+                
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.status}`);
+                }
+                
+                const meetings = await response.json();
+                console.log("Fetched meetings:", meetings);
+                
+                const meetingsContainer = document.getElementById('meetings-container');
+                meetingsContainer.innerHTML = '';
+                
+                if (!meetings || meetings.length === 0) {
+                    meetingsContainer.innerHTML = '<p>עדיין לא נקבעו פגישות</p>';
+                    return;
+                }
+                
+                meetings.forEach(meeting => {
+                    const meetingCard = document.createElement('div');
+                    meetingCard.className = 'meeting-card';
+                    
+                    meetingCard.innerHTML = `
+                        <h3>נקבעה פגישה</h3>
+                        <p>תאריך: ${meeting.meeting_date}</p>
+                        <p>שעה: ${meeting.meeting_time}</p>
+                        <p>סטטוס: ${meeting.status || 'מתוכנן'}</p>
+                    `;
+                    meetingsContainer.appendChild(meetingCard);
+                });
+            } catch (error) {
+                console.error('Error fetching meetings:', error);
+                
+                // Display a message if there's an error
+                const meetingsContainer = document.getElementById('meetings-container');
+                meetingsContainer.innerHTML = `
+                    <p>לא ניתן לטעון פגישות כרגע. אנא נסה שוב מאוחר יותר.</p>
+                    <p>שגיאה: ${error.message}</p>
+                `;
+                
+                // Add some sample meetings for testing if needed
+                if (process.env.NODE_ENV === 'development') {
+                    const sampleMeetings = [
+                        {
+                            psychologist_name: "ד״ר יעקב לוי",
+                            meeting_date: "2023-06-15",
+                            meeting_time: "10:00",
+                            status: "מתוכנן"
+                        },
+                        {
+                            psychologist_name: "ד״ר רחל אברהם",
+                            meeting_date: "2023-06-16",
+                            meeting_time: "14:30",
+                            status: "מתוכנן"
+                        }
+                    ];
+                    
+                    sampleMeetings.forEach(meeting => {
+                        const meetingCard = document.createElement('div');
+                        meetingCard.className = 'meeting-card';
+                        meetingCard.innerHTML = `
+                            <h3>פגישה עם ${meeting.psychologist_name}</h3>
+                            <p>תאריך: ${meeting.meeting_date}</p>
+                            <p>שעה: ${meeting.meeting_time}</p>
+                            <p>סטטוס: ${meeting.status}</p>
+                        `;
+                        meetingsContainer.appendChild(meetingCard);
+                    });
+                }
+            }
+        }
+
+        // Fetch meetings when page loads
+        document.addEventListener('DOMContentLoaded', fetchMeetings);
+        
+        // Also fetch meetings when a new meeting is scheduled
+        function scheduleMeeting(type) {
+            const dateInput = document.getElementById(`${type}-date`);
+            const timeInput = document.getElementById(`${type}-time`);
+            
+            if (!dateInput.value || !timeInput.value) {
+                alert('נא למלא את כל השדות');
+                return;
+            }
+            
+            if (!isValidTime(timeInput.value)) {
+                alert('נא לבחור שעה מהרשימה');
+                return;
+            }
+            
+            // בדיקה אם יש כבר פגישה באותו זמן
+            const existingMeetings = document.querySelectorAll('.meeting-card');
+            let hasConflict = false;
+            
+            existingMeetings.forEach(meeting => {
+                const meetingDate = meeting.querySelector('p:nth-child(2)').textContent.split(': ')[1];
+                const meetingTime = meeting.querySelector('p:nth-child(3)').textContent.split(': ')[1];
+                
+                if (meetingDate === dateInput.value && meetingTime === timeInput.value) {
+                    hasConflict = true;
+                }
+            });
+            
+            if (hasConflict) {
+                alert('יש כבר פגישה מתוכננת בזמן זה. נא לבחור זמן אחר.');
+                return;
+            }
+            
+            // Here you would typically send the meeting data to the server
+            // For now, we'll just add it to the UI
+            const meetingsContainer = document.getElementById('meetings-container');
+            const meetingCard = document.createElement('div');
+            meetingCard.className = 'meeting-card';
+            
+            const meetingType = type === 'psychologist' ? 'פסיכולוג' : 'מפון אחר';
+            meetingCard.innerHTML = `
+                <h3>פגישה עם ${meetingType}</h3>
+                <p>תאריך: ${dateInput.value}</p>
+                <p>שעה: ${timeInput.value}</p>
+                <p>סטטוס: מתוכנן</p>
+            `;
+            
+            meetingsContainer.appendChild(meetingCard);
+            
+            alert('הפגישה נקבעה בהצלחה!');
+            hideDateTimeSelectors(type);
         }
     </script>
 </body>
