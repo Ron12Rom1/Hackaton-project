@@ -2,6 +2,7 @@
 const userType = "{{ user_type }}";
 const userId = "{{ user_id }}";
 const receiverId = "{{ receiver_id }}";
+console.log(document.getElementById('message-input')); // Should not be null
 
 // Load previous messages
 async function loadMessages() {
@@ -70,8 +71,12 @@ async function sendMessage() {
 }
 
 // Handle Enter key
-document.getElementById('message-input').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        sendMessage();
-    }
+document.addEventListener('DOMContentLoaded', function () {
+    const input = document.getElementById('message-input');
+    input.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
 });
