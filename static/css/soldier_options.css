@@ -1,0 +1,185 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-image: url('/static/bg_anime-style.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    direction: rtl;
+}
+.main-content {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: hsla(0, 0%, 10%, 0.25);
+    backdrop-filter: blur(8px);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.meetings-section {
+    background-color: hsla(226, 100%, 92%, 0.75);
+    backdrop-filter: blur(8px);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+.meetings-section h2 {
+    color: #1565c0;
+    margin-top: 0;
+}
+.meeting-card {
+    background-color: hsla(0, 0%, 92%, 0.75);
+    backdrop-filter: blur(8px);
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.meeting-card h3 {
+    margin: 0 0 10px 0;
+    color: #1a73e8;
+}
+.meeting-card p {
+    margin: 5px 0;
+    color: #5f6368;
+}
+.option-card {
+    background-color: hsla(0, 0%, 92%, 0.75);
+    backdrop-filter: blur(8px);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    transition: background-color 1s;
+}
+.option-card:hover {
+    background-color: hsla(151, 100%, 87%, 0.75);
+    backdrop-filter: blur(8px);
+}
+.option-card h3 {
+    margin: 0 0 10px 0;
+    color: #1a73e8;
+}
+.option-card p {
+    margin: 5px 0;
+    color: #5f6368;
+}
+.datetime-selector {
+    display: none;
+    margin-top: 15px;
+    padding: 15px;
+    background-color: hsla(0, 0%, 92%, 0.75);
+    backdrop-filter: blur(8px);
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.datetime-selector.active {
+    display: block;
+}
+.datetime-selector input {
+    padding: 8px;
+    margin: 5px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    background-color: hsla(0, 0%, 100%, 0.505);
+    backdrop-filter: blur(8px);
+}
+.datetime-selector button {
+    padding: 8px 16px;
+    background-color: hsla(236, 100%, 65%, 0.75);
+    backdrop-filter: blur(8px);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: all 1s;
+}
+.datetime-selector button:hover {
+    background-color: hsla(236, 56%, 42%, 0.75);
+}
+.role-selector {
+    display: none;
+    margin-top: 15px;
+    padding: 15px;
+    background-color: hsla(0, 0%, 92%, 0.75);
+    backdrop-filter: blur(8px);
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.role-selector.active {
+    display: block;
+}
+.role-option {
+    display: inline-block;
+    padding: 8px 16px;
+    margin: 5px;
+    background-color: hsla(236, 89%, 82%, 0.75);
+    backdrop-filter: blur(8px);
+    border: 1px solid #dee2e6;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.role-option:hover {
+    background-color: hsla(236, 100%, 90%, 0.75);
+    backdrop-filter: blur(8px);
+}
+.role-option.selected {
+    background-color: hsla(236, 100%, 67%, 0.75);
+    backdrop-filter: blur(8px);
+    color: white;
+    border-color: #1a73e8;
+}
+.nav-buttons {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+}
+.nav-button {
+    padding: 8px 16px;
+    background-color: hsla(236, 39%, 35%, 0.4);
+    backdrop-filter: blur(8px);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 1s;
+}
+.nav-button:hover {
+    background-color: hsla(236, 39%, 35%, 0.4);
+}
+.welcome-message {
+    background-color: #4CAF50;
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+    animation: fadeIn 1s ease-in;
+}
+.welcome-message h2 {
+    margin: 0 0 10px 0;
+    font-size: 24px;
+}
+.welcome-message p {
+    margin: 0;
+    font-size: 16px;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+select{
+    display: inline-block;
+    padding: 8px 16px;
+    margin: 5px;
+    background-color: hsla(0, 0%, 100%, 0.505);
+    backdrop-filter: blur(8px);
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
