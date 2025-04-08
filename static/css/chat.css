@@ -2,12 +2,16 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 20px;
-    background-color: #f0f2f5;
+    background-image: url('/static/bg_anime-style.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 .container {
     max-width: 800px;
     margin: 0 auto;
-    background: white;
+    background-color: hsla(0, 0%, 10%, 0.25);
+    backdrop-filter: blur(8px);
+    border-bottom: 2px solid rgba(40, 40, 40, 0.701);
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     display: flex;
@@ -16,10 +20,18 @@ body {
 }
 .chat-header {
     padding: 15px;
-    background-color: #1a73e8;
-    color: white;
+    background-color: hsla(241, 54%, 21%, 0.5);
+    backdrop-filter: blur(8px);
+    color: rgb(135, 155, 255);
+    font-size: 40px;
+    margin-bottom: 30px;
     border-radius: 8px 8px 0 0;
     text-align: center;
+    transition-property: background-color;
+    transition-duration: 1.2s;
+}
+.chat-header:hover{
+    background-color: hsla(241, 43%, 38%, 0.8);
 }
 .chat-messages {
     flex-grow: 1;
