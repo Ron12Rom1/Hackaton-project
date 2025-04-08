@@ -6,7 +6,12 @@ body {
     background-size: cover;
     background-repeat: no-repeat;
 }
+h2{
+    margin-top: 5px;
+}
 .nav-button {
+    margin-top: 10px;
+    margin-right: 10px;
     display: block;
     padding: 12px 24px;
     border: none;
@@ -22,9 +27,9 @@ body {
     transition-duration: 0.7s;
 }
 .nav-button:hover {
-    box-shadow: 5px 8px 5px rgb(69, 69, 69);
+    box-shadow: 3px 6px 3px rgb(69, 69, 69);
     background-color: hsla(241, 47%, 20%, 0.8);
-    transform: translateY(-6px);
+    transform: translateY(-4px);
 }
 .container {
     max-width: 800px;
@@ -39,12 +44,12 @@ body {
     height: 80vh;
 }
 .chat-header {
-    padding: 15px;
+    padding: 0px;
     background-color: hsla(241, 54%, 21%, 0.5);
     backdrop-filter: blur(8px);
     color: rgb(135, 155, 255);
-    font-size: 40px;
-    margin-bottom: 30px;
+    font-size: 20px;
+    margin-bottom: 10px;
     border-radius: 8px 8px 0 0;
     text-align: center;
     transition-property: background-color;
@@ -97,8 +102,8 @@ body {
     transition-duration: 0.7s;
 }
 .chat-input button:hover{
-    box-shadow: 5px 8px 5px rgb(69, 69, 69);
+    box-shadow: 3px 6px 3px rgb(69, 69, 69);
     background-color: hsla(241, 43%, 38%, 0.8);
     backdrop-filter: blur(8px);
-    transform: translateY(-6px);
+    transform: translateY(-4px);
 }
