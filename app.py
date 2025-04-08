@@ -34,11 +34,7 @@ def init_db():
     c.execute('''
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-<<<<<<< HEAD
             username TEXT NOT NULL,
-=======
-            username TEXT UNIQUE NOT NULL,
->>>>>>> d2baf43536eed9c03f038796a65f3cecdddb4643
             password TEXT NOT NULL,
             id_number TEXT UNIQUE NOT NULL,
             user_type TEXT NOT NULL
@@ -91,7 +87,6 @@ async def register_page(request: Request, error: str = None):
     })
 
 @app.post("/register")
-<<<<<<< HEAD
 async def register(request: Request):
     form = await request.form()
     username = form.get("username")
@@ -122,67 +117,6 @@ async def register(request: Request):
     response = RedirectResponse(url=f"/options/{user_type}?user_id={user_id}&is_new_user=true", status_code=303)
     response.set_cookie(key="user_id", value=str(user_id), max_age=86400)  # 24 hours
     return response
-=======
-async def register(
-    username: str = Form(...),
-    password: str = Form(...),
-    confirm_password: str = Form(...),
-    id_number: str = Form(...),
-    user_type: str = Form(...)
-):
-    # Validate passwords match
-    if password != confirm_password:
-        return RedirectResponse(
-            url="/register?error=הסיסמאות אינן תואמות",
-            status_code=303
-        )
-    
-    # Validate ID number (basic validation - 9 digits)
-    if not id_number.isdigit() or len(id_number) != 9:
-        return RedirectResponse(
-            url="/register?error=תעודת זהות חייבת להכיל 9 ספרות",
-            status_code=303
-        )
-    
-    # Validate user type
-    if user_type not in ["soldier", "evacuee", "psychologist"]:
-        return RedirectResponse(
-            url="/register?error=סוג משתמש לא חוקי",
-            status_code=303
-        )
-    
-    # Try to create the user
-    try:
-        conn = sqlite3.connect('chat.db')
-        c = conn.cursor()
-        
-        # Check if ID number already exists
-        c.execute('SELECT id FROM users WHERE id_number=?', (id_number,))
-        if c.fetchone():
-            conn.close()
-            return RedirectResponse(
-                url="/register?error=תעודת זהות כבר קיימת במערכת",
-                status_code=303
-            )
-            
-        c.execute(
-            'INSERT INTO users (username, password, id_number, user_type) VALUES (?, ?, ?, ?)',
-            (username, password, id_number, user_type)
-        )
-        conn.commit()
-        conn.close()
-        return RedirectResponse(url=f"/login/{user_type}", status_code=303)
-    except sqlite3.IntegrityError:
-        return RedirectResponse(
-            url="/register?error=שם המשתמש כבר קיים במערכת",
-            status_code=303
-        )
-    except Exception as e:
-        return RedirectResponse(
-            url="/register?error=אירעה שגיאה בהרשמה",
-            status_code=303
-        )
->>>>>>> d2baf43536eed9c03f038796a65f3cecdddb4643
 
 @app.get("/login/{user_type}", response_class=HTMLResponse)
 async def login_page(request: Request, user_type: str):
@@ -216,7 +150,6 @@ async def login(
             return RedirectResponse(url=f"/chat/{user_type}", status_code=303)
     return RedirectResponse(url=f"/login/{user_type}?error=1", status_code=303)
 
-<<<<<<< HEAD
 @app.get("/options/{user_type}", response_class=HTMLResponse)
 async def options(
     request: Request,
@@ -248,20 +181,6 @@ async def options(
             "user_id": user_id,
             "user_info": user_info,
             "is_new_user": is_new_user
-=======
-@app.get("/options/{user_type}")
-async def options(request: Request, user_type: str):
-    if user_type not in ['soldier', 'evacuee', 'psychologist']:
-        return RedirectResponse(url='/')
-    
-    template = "soldier_options.html" if user_type == 'soldier' else "evacuee_options.html" if user_type == 'evacuee' else "psychologist_options.html"
-    
-    return TEMPLATES.TemplateResponse(
-        template,
-        {
-            "request": request,
-            "today": datetime.now().strftime('%Y-%m-%d')
->>>>>>> d2baf43536eed9c03f038796a65f3cecdddb4643
         }
     )
 
