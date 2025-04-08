@@ -357,18 +357,8 @@
                     const meetingCard = document.createElement('div');
                     meetingCard.className = 'meeting-card';
                     
-                    // Determine the patient name based on available data
-                    let patientName = "מטופל";
-                    if (meeting.patient_name) {
-                        patientName = meeting.patient_name;
-                    } else if (meeting.soldier_name) {
-                        patientName = meeting.soldier_name;
-                    } else if (meeting.evacuee_name) {
-                        patientName = meeting.evacuee_name;
-                    }
-                    
                     meetingCard.innerHTML = `
-                        <h3>פגישה עם ${patientName}</h3>
+                        <h3>נקבעה פגישה</h3>
                         <p>תאריך: ${meeting.meeting_date}</p>
                         <p>שעה: ${meeting.meeting_time}</p>
                         <p>סטטוס: ${meeting.status || 'מתוכנן'}</p>
@@ -380,40 +370,7 @@
                 
                 // Display a message if there's an error
                 const meetingsContainer = document.getElementById('meetings-container');
-                meetingsContainer.innerHTML = `
-                    <p>לא ניתן לטעון פגישות כרגע. אנא נסה שוב מאוחר יותר.</p>
-                    <p>שגיאה: ${error.message}</p>
-                `;
-                
-                // Add some sample meetings for testing if needed
-                if (process.env.NODE_ENV === 'development') {
-                    const sampleMeetings = [
-                        {
-                            patient_name: "ישראל ישראלי",
-                            meeting_date: "2023-06-15",
-                            meeting_time: "10:00",
-                            status: "מתוכנן"
-                        },
-                        {
-                            patient_name: "שרה כהן",
-                            meeting_date: "2023-06-16",
-                            meeting_time: "14:30",
-                            status: "מתוכנן"
-                        }
-                    ];
-                    
-                    sampleMeetings.forEach(meeting => {
-                        const meetingCard = document.createElement('div');
-                        meetingCard.className = 'meeting-card';
-                        meetingCard.innerHTML = `
-                            <h3>פגישה עם ${meeting.patient_name}</h3>
-                            <p>תאריך: ${meeting.meeting_date}</p>
-                            <p>שעה: ${meeting.meeting_time}</p>
-                            <p>סטטוס: ${meeting.status}</p>
-                        `;
-                        meetingsContainer.appendChild(meetingCard);
-                    });
-                }
+                meetingsContainer.innerHTML = '<p>עדיין לא נקבעו פגישות</p>';
             }
         }
 

@@ -45,12 +45,10 @@ def init_db():
     c.execute('''
         CREATE TABLE IF NOT EXISTS messages (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            sender_id INTEGER NOT NULL,
-            receiver_id INTEGER NOT NULL,
+            sender_id TEXT NOT NULL,
+            receiver_id TEXT NOT NULL,
             content TEXT NOT NULL,
-            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (sender_id) REFERENCES users (id),
-            FOREIGN KEY (receiver_id) REFERENCES users (id)
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
         )
     ''')
     
@@ -188,7 +186,9 @@ async def options(
 async def chat_bot(request: Request):
     return TEMPLATES.TemplateResponse("chat.html", {
         "request": request,
-        "user_type": "bot"
+        "user_type": "bot",
+        "user_id": request.cookies.get("user_id"),
+        "receiver_id": "bot"  # Special ID for the bot
     })
 
 @app.get("/chat/{user_type}", response_class=HTMLResponse)
@@ -209,42 +209,62 @@ async def chat(request: Request, user_type: str):
 
 # Message handling
 @app.post("/api/messages")
-async def save_message(
-    sender_id: int = Form(...),
-    receiver_id: int = Form(...),
+async def send_message(
+    sender_id: str = Form(...),
+    receiver_id: str = Form(...),
     content: str = Form(...)
 ):
-    conn = sqlite3.connect('chat.db')
-    c = conn.cursor()
     try:
+        conn = sqlite3.connect('chat.db')
+        c = conn.cursor()
+        
+        # Store the message
         c.execute(
             'INSERT INTO messages (sender_id, receiver_id, content) VALUES (?, ?, ?)',
-            (sender_id, receiver_id, content)
+            (str(sender_id), str(receiver_id), content)
         )
+        
         conn.commit()
+        conn.close()
         return {"status": "success"}
     except Exception as e:
-        return {"status": "error", "message": str(e)}
-    finally:
-        conn.close()
+        print(f"Error sending message: {str(e)}")  # Add logging
+        return JSONResponse(
+            status_code=500,
+            content={"status": "error", "message": str(e)}
+        )
 
 @app.get("/api/messages/{user_id}")
-async def get_messages(user_id: int):
-    conn = sqlite3.connect('chat.db')
-    c = conn.cursor()
+async def get_messages(user_id: str):
     try:
+        conn = sqlite3.connect('chat.db')
+        c = conn.cursor()
+        
+        # Get only messages sent by the user (for bot chat)
         c.execute('''
-            SELECT m.*, u1.username as sender_name, u2.username as receiver_name
-            FROM messages m
-            JOIN users u1 ON m.sender_id = u1.id
-            JOIN users u2 ON m.receiver_id = u2.id
-            WHERE m.sender_id = ? OR m.receiver_id = ?
-            ORDER BY m.timestamp DESC
-        ''', (user_id, user_id))
-        messages = c.fetchall()
-        return {"messages": messages}
-    finally:
+            SELECT sender_id, receiver_id, content, timestamp 
+            FROM messages 
+            WHERE sender_id = ?
+            ORDER BY timestamp ASC
+        ''', (str(user_id),))
+        
+        messages = []
+        for row in c.fetchall():
+            messages.append({
+                "sender_id": row[0],
+                "receiver_id": row[1],
+                "content": row[2],
+                "timestamp": row[3]
+            })
+        
         conn.close()
+        return {"messages": messages}
+    except Exception as e:
+        print(f"Error getting messages: {str(e)}")  # Add logging
+        return JSONResponse(
+            status_code=500,
+            content={"status": "error", "message": str(e)}
+        )
 
 # Meeting handling
 @app.post("/api/meetings")

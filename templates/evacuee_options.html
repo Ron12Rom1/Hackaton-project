@@ -349,38 +349,7 @@
                 
                 // Display a message if there's an error
                 const meetingsContainer = document.getElementById('meetings-container');
-                meetingsContainer.innerHTML = `
-                    <p>לא ניתן לטעון פגישות כרגע. אנא נסה שוב מאוחר יותר.</p>
-                `;
-                
-                // Add some sample meetings for testing if needed
-                if (process.env.NODE_ENV === 'development') {
-                    const sampleMeetings = [
-                        {
-                            meeting_date: "2023-06-15",
-                            meeting_time: "10:00",
-                            status: "מתוכנן"
-                        },
-                        {
-                            meeting_date: "2023-06-16",
-                            meeting_time: "14:30",
-                            status: "מתוכנן"
-                        }
-                    ];
-                    
-                    sampleMeetings.forEach(meeting => {
-                        const meetingCard = document.createElement('div');
-                        meetingCard.className = 'meeting-card';
-                        
-                        meetingCard.innerHTML = `
-                            <h3>נקבעה פגישה</h3>
-                            <p>תאריך: ${meeting.meeting_date}</p>
-                            <p>שעה: ${meeting.meeting_time}</p>
-                            <p>סטטוס: ${meeting.status}</p>
-                        `;
-                        meetingsContainer.appendChild(meetingCard);
-                    });
-                }
+                meetingsContainer.innerHTML = '<p>עדיין לא נקבעו פגישות</p>';
             }
         }
 
