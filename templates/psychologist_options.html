@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>אפשרויות תמיכה לפסיכולוגים</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f2f5;
+            direction: rtl;
+        }
+        .main-content {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .option-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .option-card:hover {
+            background: #e9ecef;
+        }
+        .option-card h3 {
+            margin: 0 0 10px 0;
+            color: #1a73e8;
+        }
+        .option-card p {
+            margin: 5px 0;
+            color: #5f6368;
+        }
+        .datetime-selector {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .datetime-selector.active {
+            display: block;
+        }
+        .datetime-selector input {
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+        }
+        .datetime-selector button {
+            padding: 8px 16px;
+            background: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .datetime-selector button:hover {
+            background: #1557b0;
+        }
+        .nav-buttons {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .nav-button {
+            padding: 8px 16px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .nav-button:hover {
+            background: #5a6268;
+        }
+        .user-type-selector {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .user-type-selector.active {
+            display: block;
+        }
+        .user-type-option {
+            display: inline-block;
+            padding: 8px 16px;
+            margin: 5px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .user-type-option:hover {
+            background: #e9ecef;
+        }
+        .user-type-option.selected {
+            background: #1a73e8;
+            color: white;
+            border-color: #1a73e8;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-content">
+        <div class="nav-buttons">
+            <a href="/" class="nav-button">חזרה למסך הראשי</a>
+        </div>
+        <h2>אפשרויות תמיכה לפסיכולוגים</h2>
+        
+        <div class="option-card" onclick="showUserTypeSelector('chat')">
+            <h3>שיחה עם מטופלים</h3>
+            <p>בחר סוג מטופל לשיחה</p>
+            <div class="user-type-selector" id="chat-user-type">
+                <div class="user-type-option" onclick="selectUserType(this, 'chat')">חיילים</div>
+                <div class="user-type-option" onclick="selectUserType(this, 'chat')">מפונים</div>
+                <button onclick="startChat()">התחל שיחה</button>
+            </div>
+        </div>
+        
+        <div class="option-card" onclick="showDateTimeSelector('meeting')">
+            <h3>קביעת פגישה</h3>
+            <p>קבע פגישה עם מטופל</p>
+            <div class="user-type-selector" id="meeting-user-type">
+                <div class="user-type-option" onclick="selectUserType(this, 'meeting')">חיילים</div>
+                <div class="user-type-option" onclick="selectUserType(this, 'meeting')">מפונים</div>
+            </div>
+            <div class="datetime-selector" id="meeting-datetime">
+                <input type="date" id="meeting-date" min="{{ today }}">
+                <input type="time" id="meeting-time" min="10:00" max="20:00" step="1800">
+                <p style="color: #856404; font-size: 0.9em;">שעות הפגישה: 10:00 - 20:00</p>
+                <button onclick="scheduleMeeting()">קבע פגישה</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedUserType = null;
+        
+        function showUserTypeSelector(type) {
+            // הסתר את כל הסלקטורים
+            document.querySelectorAll('.user-type-selector').forEach(el => {
+                el.classList.remove('active');
+            });
+            document.querySelectorAll('.datetime-selector').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            // הצג את הסלקטור המתאים
+            const userTypeSelector = document.getElementById(`${type}-user-type`);
+            userTypeSelector.classList.add('active');
+            
+            // אם זה קביעת פגישה, הצג גם את בחירת התפקיד
+            if (type === 'meeting') {
+                const datetimeSelector = document.getElementById('meeting-datetime');
+                datetimeSelector.classList.add('active');
+            }
+        }
+        
+        function selectUserType(element, type) {
+            // הסר את הבחירה מכל האפשרויות
+            document.querySelectorAll(`#${type}-user-type .user-type-option`).forEach(el => {
+                el.classList.remove('selected');
+            });
+            
+            // סמן את האפשרות שנבחרה
+            element.classList.add('selected');
+            selectedUserType = element.textContent;
+            
+            // מנע את הפעלת האירוע של ההורה
+            event.stopPropagation();
+        }
+        
+        function startChat() {
+            if (!selectedUserType) {
+                alert('נא לבחור סוג מטופל');
+                return;
+            }
+            // כאן יש להוסיף את הלוגיקה להתחלת שיחה
+            window.location.href = `/chat?user_type=${selectedUserType}`;
+        }
+        
+        function isValidTime(time) {
+            const [hours, minutes] = time.split(':').map(Number);
+            return hours >= 10 && hours < 20;
+        }
+        
+        function scheduleMeeting() {
+            if (!selectedUserType) {
+                alert('נא לבחור סוג מטופל');
+                return;
+            }
+            
+            const dateInput = document.getElementById('meeting-date');
+            const timeInput = document.getElementById('meeting-time');
+            
+            if (!dateInput.value || !timeInput.value) {
+                alert('נא למלא את כל השדות');
+                return;
+            }
+            
+            if (!isValidTime(timeInput.value)) {
+                alert('פגישות זמינות רק בין השעות 10:00 ל-20:00');
+                return;
+            }
+            
+            alert('הפגישה נקבעה בהצלחה!');
+            hideSelectors();
+        }
+        
+        function hideSelectors() {
+            document.querySelectorAll('.user-type-selector').forEach(el => {
+                el.classList.remove('active');
+            });
+            document.querySelectorAll('.datetime-selector').forEach(el => {
+                el.classList.remove('active');
+            });
+            selectedUserType = null;
+        }
+    </script>
+</body>
+</html> 

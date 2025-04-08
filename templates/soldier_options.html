@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>אפשרויות תמיכה לחיילים</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f2f5;
+            direction: rtl;
+        }
+        .main-content {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .option-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .option-card:hover {
+            background: #e9ecef;
+        }
+        .option-card h3 {
+            margin: 0 0 10px 0;
+            color: #1a73e8;
+        }
+        .option-card p {
+            margin: 5px 0;
+            color: #5f6368;
+        }
+        .datetime-selector {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .datetime-selector.active {
+            display: block;
+        }
+        .datetime-selector input {
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+        }
+        .datetime-selector button {
+            padding: 8px 16px;
+            background: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .datetime-selector button:hover {
+            background: #1557b0;
+        }
+        .role-selector {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .role-selector.active {
+            display: block;
+        }
+        .role-option {
+            display: inline-block;
+            padding: 8px 16px;
+            margin: 5px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .role-option:hover {
+            background: #e9ecef;
+        }
+        .role-option.selected {
+            background: #1a73e8;
+            color: white;
+            border-color: #1a73e8;
+        }
+        .nav-buttons {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .nav-button {
+            padding: 8px 16px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .nav-button:hover {
+            background: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-content">
+        <div class="nav-buttons">
+            <a href="/" class="nav-button">חזרה למסך הראשי</a>
+        </div>
+        <h2>אפשרויות תמיכה לחיילים</h2>
+        
+        <div class="option-card" onclick="showDateTimeSelector('soldiers')">
+            <h3>שיחה עם חיילים</h3>
+            <p>קבע פגישה לשיחה עם חיילים אחרים</p>
+            <div class="role-selector" id="soldiers-role">
+                <div class="role-option" onclick="selectRole(this, 'soldiers')">לוחם</div>
+                <div class="role-option" onclick="selectRole(this, 'soldiers')">חובש</div>
+                <div class="role-option" onclick="selectRole(this, 'soldiers')">נהג</div>
+                <div class="role-option" onclick="selectRole(this, 'soldiers')">אחר</div>
+            </div>
+            <div class="datetime-selector" id="soldiers-datetime">
+                <input type="date" id="soldiers-date" min="{{ today }}">
+                <input type="time" id="soldiers-time">
+                <button onclick="scheduleMeeting('soldiers')">קבע פגישה</button>
+            </div>
+        </div>
+        
+        <div class="option-card" onclick="showDateTimeSelector('psychologist')">
+            <h3>פגישה עם פסיכולוג</h3>
+            <p>קבע פגישה עם פסיכולוג</p>
+            <div class="datetime-selector" id="psychologist-datetime">
+                <input type="date" id="psychologist-date" min="{{ today }}">
+                <input type="time" id="psychologist-time" min="10:00" max="20:00" step="1800">
+                <p style="color: #856404; font-size: 0.9em;">שעות הפגישה: 10:00 - 20:00</p>
+                <button onclick="scheduleMeeting('psychologist')">קבע פגישה</button>
+            </div>
+        </div>
+        
+        <div class="option-card" onclick="window.location.href='/chat-bot'">
+            <h3>צ'אט עם בוט</h3>
+            <p>שוחח עם בוט AI שיעזור לך</p>
+            <div class="datetime-selector" id="bot-datetime">
+                <div class="nav-buttons">
+                    <button class="nav-button" onclick="window.location.href='/options/soldier'">חזרה לאפשרויות</button>
+                    <button class="nav-button" onclick="window.location.href='/'">חזרה למסך הראשי</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showDateTimeSelector(type) {
+            // הסתר את כל הסלקטורים
+            document.querySelectorAll('.datetime-selector').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            // הסתר את כל בחירות התפקיד
+            document.querySelectorAll('.role-selector').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            // הצג את הסלקטור המתאים
+            const datetimeSelector = document.getElementById(`${type}-datetime`);
+            datetimeSelector.classList.add('active');
+            
+            // אם זה פגישה עם חיילים, הצג גם את בחירת התפקיד
+            if (type === 'soldiers') {
+                const roleSelector = document.getElementById(`${type}-role`);
+                roleSelector.classList.add('active');
+            }
+            
+            // הוסף כפתורי ניווט לסלקטור
+            const navButtons = `
+                <div class="nav-buttons">
+                    <button class="nav-button" onclick="window.location.href='/'">חזרה למסך הראשי</button>
+                </div>
+            `;
+            
+            if (!datetimeSelector.querySelector('.nav-buttons')) {
+                datetimeSelector.insertAdjacentHTML('afterbegin', navButtons);
+            }
+        }
+        
+        function selectRole(element, type) {
+            // הסר את הבחירה מכל האפשרויות
+            document.querySelectorAll(`#${type}-role .role-option`).forEach(el => {
+                el.classList.remove('selected');
+            });
+            
+            // סמן את האפשרות שנבחרה
+            element.classList.add('selected');
+            
+            // מנע את הפעלת האירוע של ההורה
+            event.stopPropagation();
+        }
+        
+        function isValidTime(time) {
+            const [hours, minutes] = time.split(':').map(Number);
+            return hours >= 10 && hours < 20;
+        }
+        
+        function scheduleMeeting(type) {
+            const dateInput = document.getElementById(`${type}-date`);
+            const timeInput = document.getElementById(`${type}-time`);
+            const roleSelect = document.getElementById(`${type}-role`);
+            
+            if (!dateInput.value || !timeInput.value) {
+                alert('נא למלא את כל השדות');
+                return;
+            }
+            
+            if (type === 'psychologist' && !isValidTime(timeInput.value)) {
+                alert('פגישות עם פסיכולוג זמינות רק בין השעות 10:00 ל-20:00');
+                return;
+            }
+            
+            let role = null;
+            if (type === 'soldiers') {
+                const selectedRole = document.querySelector(`#${type}-role .role-option.selected`);
+                if (!selectedRole) {
+                    alert('נא לבחור תפקיד');
+                    return;
+                }
+                role = selectedRole.textContent;
+            }
+            
+            alert('הפגישה נקבעה בהצלחה!');
+            hideDateTimeSelectors(type);
+        }
+        
+        function hideDateTimeSelectors(type) {
+            document.getElementById(`${type}-datetime`).classList.remove('active');
+            if (type === 'soldiers') {
+                document.getElementById(`${type}-role`).classList.remove('active');
+            }
+        }
+    </script>
+</body>
+</html> 
