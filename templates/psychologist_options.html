@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>אפשרויות תמיכה לפסיכולוגים</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f2f5;
+            direction: rtl;
+        }
+        .main-content {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .meetings-section {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .meetings-section h2 {
+            color: #1565c0;
+            margin-top: 0;
+        }
+        .meeting-card {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .meeting-card h3 {
+            margin: 0 0 10px 0;
+            color: #1a73e8;
+        }
+        .meeting-card p {
+            margin: 5px 0;
+            color: #5f6368;
+        }
+        .option-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .option-card:hover {
+            background: #e9ecef;
+        }
+        .option-card h3 {
+            margin: 0 0 10px 0;
+            color: #1a73e8;
+        }
+        .option-card p {
+            margin: 5px 0;
+            color: #5f6368;
+        }
+        .datetime-selector {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .datetime-selector.active {
+            display: block;
+        }
+        .datetime-selector input, .datetime-selector select {
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+        }
+        .datetime-selector button {
+            padding: 8px 16px;
+            background: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .datetime-selector button:hover {
+            background: #1557b0;
+        }
+        .nav-buttons {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .nav-button {
+            padding: 8px 16px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .nav-button:hover {
+            background: #5a6268;
+        }
+        .user-type-selector {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .user-type-selector.active {
+            display: block;
+        }
+        .user-type-option {
+            padding: 10px;
+            margin: 5px 0;
+            background: #f8f9fa;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .user-type-option:hover {
+            background: #e9ecef;
+        }
+        .user-type-option.selected {
+            background: #e3f2fd;
+            border: 1px solid #1a73e8;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-content">
+        <div class="meetings-section">
+            <h2>פגישות שנקבעו</h2>
+            <div id="meetings-container">
+                <!-- Meetings will be displayed here -->
+            </div>
+        </div>
+        <div class="nav-buttons">
+            <a href="/" class="nav-button">התנתקות</a>
+        </div>
+        <h2>אפשרויות תמיכה לפסיכולוגים</h2>
+        
+        <div class="option-card" onclick="showUserTypeSelector()">
+            <h3>פגישה עם חייל</h3>
+            <p>קבע פגישה עם חייל</p>
+            <div class="user-type-selector" id="soldier-type-selector">
+                <div class="user-type-option" onclick="selectUserType('soldier')">חייל</div>
+                <div class="user-type-option" onclick="selectUserType('evacuee')">מפונה</div>
+                <div class="nav-buttons">
+                    <button class="nav-button" onclick="hideUserTypeSelector()">חזרה</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="option-card" onclick="showDateTimeSelector('soldier')">
+            <h3>פגישה עם חייל</h3>
+            <p>קבע פגישה עם חייל</p>
+            <div class="datetime-selector" id="soldier-datetime">
+                <input type="date" id="soldier-date" min="{{ today }}">
+                <select id="soldier-time" class="time-select">
+                    <option value="">בחר שעה</option>
+                    <option value="10:00">10:00</option>
+                    <option value="10:30">10:30</option>
+                    <option value="11:00">11:00</option>
+                    <option value="11:30">11:30</option>
+                    <option value="12:00">12:00</option>
+                    <option value="12:30">12:30</option>
+                    <option value="13:00">13:00</option>
+                    <option value="13:30">13:30</option>
+                    <option value="14:00">14:00</option>
+                    <option value="14:30">14:30</option>
+                    <option value="15:00">15:00</option>
+                    <option value="15:30">15:30</option>
+                    <option value="16:00">16:00</option>
+                    <option value="16:30">16:30</option>
+                    <option value="17:00">17:00</option>
+                    <option value="17:30">17:30</option>
+                    <option value="18:00">18:00</option>
+                    <option value="18:30">18:30</option>
+                    <option value="19:00">19:00</option>
+                    <option value="19:30">19:30</option>
+                </select>
+                <p style="color: #856404; font-size: 0.9em;">פגישות נקבעות במרווחים של 30 דקות</p>
+                <button onclick="scheduleMeeting('soldier')">קבע פגישה</button>
+            </div>
+        </div>
+        
+        <div class="option-card" onclick="showDateTimeSelector('evacuee')">
+            <h3>פגישה עם מפונה</h3>
+            <p>קבע פגישה עם מפונה</p>
+            <div class="datetime-selector" id="evacuee-datetime">
+                <input type="date" id="evacuee-date" min="{{ today }}">
+                <select id="evacuee-time" class="time-select">
+                    <option value="">בחר שעה</option>
+                    <option value="10:00">10:00</option>
+                    <option value="10:30">10:30</option>
+                    <option value="11:00">11:00</option>
+                    <option value="11:30">11:30</option>
+                    <option value="12:00">12:00</option>
+                    <option value="12:30">12:30</option>
+                    <option value="13:00">13:00</option>
+                    <option value="13:30">13:30</option>
+                    <option value="14:00">14:00</option>
+                    <option value="14:30">14:30</option>
+                    <option value="15:00">15:00</option>
+                    <option value="15:30">15:30</option>
+                    <option value="16:00">16:00</option>
+                    <option value="16:30">16:30</option>
+                    <option value="17:00">17:00</option>
+                    <option value="17:30">17:30</option>
+                    <option value="18:00">18:00</option>
+                    <option value="18:30">18:30</option>
+                    <option value="19:00">19:00</option>
+                    <option value="19:30">19:30</option>
+                </select>
+                <p style="color: #856404; font-size: 0.9em;">פגישות נקבעות במרווחים של 30 דקות</p>
+                <button onclick="scheduleMeeting('evacuee')">קבע פגישה</button>
+            </div>
+        </div>
+        
+        <div class="option-card" onclick="window.location.href='/chat-bot'">
+            <h3>צ'אט עם בוט</h3>
+            <p>שוחח עם בוט AI שיעזור לך</p>
+        </div>
+    </div>
+
+    <script>
+        let selectedUserType = null;
+        
+        function showUserTypeSelector() {
+            document.querySelectorAll('.user-type-selector').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            document.getElementById('soldier-type-selector').classList.add('active');
+        }
+        
+        function hideUserTypeSelector() {
+            document.getElementById('soldier-type-selector').classList.remove('active');
+        }
+        
+        function selectUserType(type) {
+            selectedUserType = type;
+            hideUserTypeSelector();
+            
+            if (type === 'soldier') {
+                showDateTimeSelector('soldier');
+            } else if (type === 'evacuee') {
+                showDateTimeSelector('evacuee');
+            }
+        }
+        
+        function showDateTimeSelector(type) {
+            // הסתר את כל הסלקטורים
+            document.querySelectorAll('.datetime-selector').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            // הצג את הסלקטור המתאים
+            const datetimeSelector = document.getElementById(`${type}-datetime`);
+            datetimeSelector.classList.add('active');
+            
+            // הוסף כפתורי ניווט לסלקטור
+            const navButtons = `
+                <div class="nav-buttons">
+                    <button class="nav-button" onclick="window.location.href='/'">חזרה למסך הראשי</button>
+                </div>
+            `;
+            
+            if (!datetimeSelector.querySelector('.nav-buttons')) {
+                datetimeSelector.insertAdjacentHTML('afterbegin', navButtons);
+            }
+        }
+        
+        function isValidTime(time) {
+            // בדיקה שהשעה נבחרה מהתפריט הנפתח
+            return time !== "";
+        }
+        
+        function scheduleMeeting(type) {
+            const dateInput = document.getElementById(`${type}-date`);
+            const timeInput = document.getElementById(`${type}-time`);
+            
+            if (!dateInput.value || !timeInput.value) {
+                alert('נא למלא את כל השדות');
+                return;
+            }
+            
+            if (!isValidTime(timeInput.value)) {
+                alert('נא לבחור שעה מהרשימה');
+                return;
+            }
+            
+            // בדיקה אם יש כבר פגישה באותו זמן
+            const existingMeetings = document.querySelectorAll('.meeting-card');
+            let hasConflict = false;
+            
+            existingMeetings.forEach(meeting => {
+                const meetingDate = meeting.querySelector('p:nth-child(2)').textContent.split(': ')[1];
+                const meetingTime = meeting.querySelector('p:nth-child(3)').textContent.split(': ')[1];
+                
+                if (meetingDate === dateInput.value && meetingTime === timeInput.value) {
+                    hasConflict = true;
+                }
+            });
+            
+            if (hasConflict) {
+                alert('יש כבר פגישה מתוכננת בזמן זה. נא לבחור זמן אחר.');
+                return;
+            }
+            
+            alert('הפגישה נקבעה בהצלחה!');
+            hideDateTimeSelectors(type);
+            
+            // הוסף את הפגישה החדשה לרשימה
+            const meetingsContainer = document.getElementById('meetings-container');
+            const meetingCard = document.createElement('div');
+            meetingCard.className = 'meeting-card';
+            
+            meetingCard.innerHTML = `
+                <h3>נקבעה פגישה</h3>
+                <p>תאריך: ${dateInput.value}</p>
+                <p>שעה: ${timeInput.value}</p>
+                <p>סטטוס: מתוכנן</p>
+            `;
+            meetingsContainer.appendChild(meetingCard);
+        }
+        
+        function hideDateTimeSelectors(type) {
+            document.getElementById(`${type}-datetime`).classList.remove('active');
+        }
+
+        // Function to fetch and display meetings
+        async function fetchMeetings() {
+            try {
+                const userId = new URLSearchParams(window.location.search).get('user_id');
+                console.log("Fetching meetings for user ID:", userId);
+                
+                // Try to fetch meetings from the API
+                const response = await fetch(`/api/meetings/${userId}`);
+                
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.status}`);
+                }
+                
+                const meetings = await response.json();
+                console.log("Fetched meetings:", meetings);
+                
+                const meetingsContainer = document.getElementById('meetings-container');
+                meetingsContainer.innerHTML = '';
+                
+                if (!meetings || meetings.length === 0) {
+                    meetingsContainer.innerHTML = '<p>עדיין לא נקבעו פגישות</p>';
+                    return;
+                }
+                
+                meetings.forEach(meeting => {
+                    const meetingCard = document.createElement('div');
+                    meetingCard.className = 'meeting-card';
+                    
+                    // Determine the patient name based on available data
+                    let patientName = "מטופל";
+                    if (meeting.patient_name) {
+                        patientName = meeting.patient_name;
+                    } else if (meeting.soldier_name) {
+                        patientName = meeting.soldier_name;
+                    } else if (meeting.evacuee_name) {
+                        patientName = meeting.evacuee_name;
+                    }
+                    
+                    meetingCard.innerHTML = `
+                        <h3>פגישה עם ${patientName}</h3>
+                        <p>תאריך: ${meeting.meeting_date}</p>
+                        <p>שעה: ${meeting.meeting_time}</p>
+                        <p>סטטוס: ${meeting.status || 'מתוכנן'}</p>
+                    `;
+                    meetingsContainer.appendChild(meetingCard);
+                });
+            } catch (error) {
+                console.error('Error fetching meetings:', error);
+                
+                // Display a message if there's an error
+                const meetingsContainer = document.getElementById('meetings-container');
+                meetingsContainer.innerHTML = `
+                    <p>לא ניתן לטעון פגישות כרגע. אנא נסה שוב מאוחר יותר.</p>
+                    <p>שגיאה: ${error.message}</p>
+                `;
+                
+                // Add some sample meetings for testing if needed
+                if (process.env.NODE_ENV === 'development') {
+                    const sampleMeetings = [
+                        {
+                            patient_name: "ישראל ישראלי",
+                            meeting_date: "2023-06-15",
+                            meeting_time: "10:00",
+                            status: "מתוכנן"
+                        },
+                        {
+                            patient_name: "שרה כהן",
+                            meeting_date: "2023-06-16",
+                            meeting_time: "14:30",
+                            status: "מתוכנן"
+                        }
+                    ];
+                    
+                    sampleMeetings.forEach(meeting => {
+                        const meetingCard = document.createElement('div');
+                        meetingCard.className = 'meeting-card';
+                        meetingCard.innerHTML = `
+                            <h3>פגישה עם ${meeting.patient_name}</h3>
+                            <p>תאריך: ${meeting.meeting_date}</p>
+                            <p>שעה: ${meeting.meeting_time}</p>
+                            <p>סטטוס: ${meeting.status}</p>
+                        `;
+                        meetingsContainer.appendChild(meetingCard);
+                    });
+                }
+            }
+        }
+
+        // Fetch meetings when page loads
+        document.addEventListener('DOMContentLoaded', fetchMeetings);
+    </script>
+</body>
+</html> 
